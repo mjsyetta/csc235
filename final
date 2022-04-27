@@ -1,0 +1,33 @@
+//adapted from FastLED's NeoPixel Library (StripVariant)
+//credit to David Madison
+
+#include <Adafruit_NeoPixel.h>
+
+//NeoPixel setup
+int numLights = 60;
+int stripPin = 7;
+Adafruit_NeoPixel strip(numLights, stripPin);
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(stripPin, OUTPUT);
+  strip.begin();
+  strip.clear();
+  strip.setBrightness(255);
+
+}
+
+void loop() {
+  rainbow();
+}
+
+void rainbow() {
+  for (unsigned long first = 0; first < 65536; first += 256) {
+    for (unsigned int i = 0; i < strip.numPixels(); i++) {
+      unsigned long next = first + (i * 65536UL / numLights); // vary LED hue based on position
+      strip.setPixelColor(i, strip.gamma32(strip.ColorHSV(next)));  // assign color, using gamma curve for a more natural look
+    }
+    strip.show();
+    delay(10);
+  }
+}
